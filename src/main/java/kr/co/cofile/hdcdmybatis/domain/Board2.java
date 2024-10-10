@@ -6,16 +6,13 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
-@RequiredArgsConstructor
-@AllArgsConstructor
-@Builder
-@Getter
-@Setter
+//@RequiredArgsConstructor
+//@Getter
+//@Setter
 //@EqualsAndHashCode(of="id")
-@EqualsAndHashCode(of={"title", "writer"})
-@ToString(exclude = "content")
-public class Board implements Serializable {
+//@ToString(exclude = "content")
+@Data
+public class Board2 implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -26,7 +23,6 @@ public class Board implements Serializable {
     @NonNull
     private String content;
     @NonNull
-//    @Builder.Default
     private String writer;
     private LocalDateTime createTime;
 
