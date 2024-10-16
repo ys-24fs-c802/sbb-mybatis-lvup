@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +18,7 @@ import lombok.ToString;
 public class Member {
 
     // 입력값 검증 규칙
+    // 문자열이 null이 아니고 trim한 길이가 0보다 크다를 검사
     @NotBlank
     private String userId = "hongkd";
 
@@ -23,9 +26,12 @@ public class Member {
 
     // 여러개의 입력값 검증 규칙
     @NotBlank
+    // trim한 길이가 3보다 크다를 검사
     @Size(max = 3)
     private String userName;
 
+    // 이메일 주소를 검사
+    @Email
     private String email;
     private String gender;
 
@@ -33,6 +39,8 @@ public class Member {
 
     private List<Card> cardList;
 
+    // 과거 날짜인지를 검사 | 미래 날짜는 @Future
+    @Past
     @JsonFormat(pattern = "yyyyMMdd")
     private LocalDate dateOfBirth;
 
