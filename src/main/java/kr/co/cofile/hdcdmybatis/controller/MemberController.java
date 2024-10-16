@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -135,4 +136,14 @@ public class MemberController {
         return new ResponseEntity<>(member, HttpStatus.OK);
     }
 
+    @PostMapping(path = "/upload", produces = "text/plain;charset=UTF-8")
+    public ResponseEntity<String> upload(MultipartFile file) {
+        String originalFilename = file.getOriginalFilename();
+
+        log.info("originalName: " + originalFilename);
+
+        ResponseEntity<String> entity = new ResponseEntity<>("UPLOAD SUCCESS " + originalFilename, HttpStatus.OK);
+
+        return entity;
+    }
 }
