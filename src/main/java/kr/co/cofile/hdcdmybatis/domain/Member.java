@@ -15,11 +15,13 @@ import lombok.ToString;
 @ToString
 public class Member {
 
+    // 입력값 검증 규칙
     @NotBlank
     private String userId = "hongkd";
 
     private String password = "1234";
 
+    // 여러개의 입력값 검증 규칙
     @NotBlank
     @Size(max = 3)
     private String userName;

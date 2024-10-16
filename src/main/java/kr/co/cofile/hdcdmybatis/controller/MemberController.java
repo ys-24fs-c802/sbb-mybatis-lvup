@@ -9,6 +9,8 @@ import kr.co.cofile.hdcdmybatis.domain.Member;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -153,8 +155,31 @@ public class MemberController {
     public ResponseEntity<String> register(@Validated @RequestBody Member member, BindingResult result) {
         log.info("register");
 
-        if(result.hasErrors()) {
-            return new ResponseEntity<>(result.toString(), HttpStatus.BAD_REQUEST);
+        if (result.hasErrors()) {
+            List<ObjectError> allErrors = result.getAllErrors();
+            List<ObjectError> globalErrors = result.getGlobalErrors();
+            List<FieldError> fieldErrors = result.getFieldErrors();
+
+            log.info("allErrors.size() = " + allErrors.size());
+            log.info("globalErrors.size() = " + globalErrors.size());
+            log.info("fieldErrors.size() = " + fieldErrors.size());
+
+            for (ObjectError objectError : allErrors) {
+                log.info("allError = " + objectError);
+            }
+
+            for (ObjectError objectError : globalErrors) {
+                log.info("globalError = " + objectError);
+            }
+
+            for (FieldError fieldError : fieldErrors) {
+                log.info("fieldError = " + fieldError);
+                log.info("fieldError.getDefaultMessage() = " + fieldError.getDefaultMessage());
+            }
+
+            ResponseEntity<String> entity = new ResponseEntity<>(result.toString(), HttpStatus.BAD_REQUEST);
+
+            return entity;
         }
 
         log.info("member.getUserId() = " + member.getUserId());
