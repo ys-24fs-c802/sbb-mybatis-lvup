@@ -8,6 +8,8 @@ import kr.co.cofile.hdcdmybatis.domain.Card;
 import kr.co.cofile.hdcdmybatis.domain.Member;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.extern.slf4j.Slf4j;
@@ -145,5 +147,22 @@ public class MemberController {
         ResponseEntity<String> entity = new ResponseEntity<>("UPLOAD SUCCESS " + originalFilename, HttpStatus.OK);
 
         return entity;
+    }
+
+    @PostMapping(path = "", produces="text/plain;charset=utf-8")
+    public ResponseEntity<String> register(@Validated @RequestBody Member member, BindingResult result) {
+        log.info("register");
+
+        if(result.hasErrors()) {
+            return new ResponseEntity<>(result.toString(), HttpStatus.BAD_REQUEST);
+        }
+
+        log.info("member.getUserId() = " + member.getUserId());
+        log.info("member.getPassword() = " + member.getPassword());
+        log.info("member.getUserName() = " + member.getUserName());
+        log.info("member.getEmail() = " + member.getEmail());
+        log.info("member.getGender() = " + member.getGender());
+
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 }
