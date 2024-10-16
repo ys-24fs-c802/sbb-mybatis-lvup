@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
@@ -35,8 +36,12 @@ public class Member {
     private String email;
     private String gender;
 
+    // 중첩된 자바빈즈의 입력값을 검증
+    @Valid
     private Address address;
 
+    // 자바빈즈 컬렉션의 입력값을 검증
+    @Valid
     private List<Card> cardList;
 
     // 과거 날짜인지를 검사 | 미래 날짜는 @Future

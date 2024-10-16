@@ -8,8 +8,45 @@
 <script th:src="@{/js/jquery.min.js}"></script>
 
 <script type="text/javascript">
+    function formatDateForInput(date) {
+        let d = date || new Date(),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
+
+    function formatDateString(dateString) {
+        // 입력된 날짜 문자열을 '/'로 분리
+        const parts = dateString.split('-');
+
+        // 년, 월, 일을 추출
+        const year = parts[0];
+        const month = addLeadingZero(parts[1]);
+        const day = addLeadingZero(parts[2]);
+
+        // yyyyMMdd 형식으로 조합
+        return `${year}${month}${day}`;
+    }
+
+    // 한 자리 숫자 앞에 0을 추가하는 보조 함수
+    function addLeadingZero(num) {
+        return num.length < 2 ? "0" + num : num;
+    }
+
     $(function () {
         const baseUrl = "http://localhost:8080/members";
+
+        // 날짜의 기본값을 오늘로 설정
+        const today = formatDateForInput(new Date());
+        $("#dateOfBirth").val(today);
+
         $("#registerBtn01").on("click", function () {
             const userId = $("#userId");
             const password = $("#password");
@@ -156,11 +193,14 @@
             const password01 = $("#password");
             const userName = $("#userName");
             const email = $("#email");
+            const dateOfBirth = $("#dateOfBirth");
 
             const userId01Val = userId01.val();
             const password01Val = password01.val();
             const userNameVal = userName.val();
             const emailVal = email.val();
+            // 날짜형식을 yyyy-MM-dd에서 yyyyMMdd로 변경 - 유효성 검사에 지정된 pattern에 맞춤
+            const dateOfBirthVal = formatDateString(dateOfBirth.val());
 
             const genderVal = $('input[name="gender"]:checked').val();
 
@@ -172,6 +212,7 @@
                 password: password01Val,
                 userName: userNameVal,
                 email: emailVal,
+                dateOfBirth: dateOfBirthVal,
                 gender: genderVal
             };
 
@@ -209,8 +250,11 @@
     <label for="userName">userName: </label>
     <input type="text" name="userName" value="홍길동" id="userName"><br>
     <br>
-    <label for="email">userName: </label>
+    <label for="email">email: </label>
     <input type="text" name="email" value="hong@a.com" id="email"><br>
+    <br>
+    <label for="dateOfBirth">dateOfBirth: </label>
+    <input id="dateOfBirth" name="dateOfBirth" type="date" value=""/><br>
     <div>
         <div>성별</div>
         <input id="gender1" name="gender" type="radio" value="male"/>
