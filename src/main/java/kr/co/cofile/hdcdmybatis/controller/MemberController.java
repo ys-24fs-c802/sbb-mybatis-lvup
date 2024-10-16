@@ -1,5 +1,6 @@
 package kr.co.cofile.hdcdmybatis.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import kr.co.cofile.hdcdmybatis.domain.Address;
@@ -100,6 +101,38 @@ public class MemberController {
         ResponseEntity<String> entity = new ResponseEntity<>("SUCCESS", HttpStatus.OK);
 
         return entity;
+    }
+
+    @GetMapping("/registerForm")
+    public String registerForm() {
+        log.info("registerForm");
+
+        return "registerForm";
+    }
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody Member member) {
+        log.info("register");
+
+        log.info("userId = " + member.getUserId());
+        log.info("password = " + member.getPassword());
+
+        log.info("member.getDateOfBirth() = " + member.getDateOfBirth());
+
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+    }
+
+    @GetMapping("/read")
+    public ResponseEntity<Member> read() {
+        log.info("register");
+
+        Member member = new Member();
+        member.setUserId("hongkd");
+        member.setPassword("1234");
+
+        LocalDate dateOfBirth = LocalDate.of(2024, 9, 8);
+        member.setDateOfBirth(dateOfBirth);
+
+        return new ResponseEntity<>(member, HttpStatus.OK);
     }
 
 }

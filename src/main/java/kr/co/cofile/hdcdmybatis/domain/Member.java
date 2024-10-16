@@ -1,5 +1,6 @@
 package kr.co.cofile.hdcdmybatis.domain;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import lombok.Getter;
@@ -18,5 +19,7 @@ public class Member {
     private Address address;
 
     private List<Card> cardList;
+
+    private LocalDate dateOfBirth;
 
 }

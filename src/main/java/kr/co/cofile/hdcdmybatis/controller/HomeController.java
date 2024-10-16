@@ -40,4 +40,10 @@ public class HomeController {
     public String fetchUser() {
         return "fetchUser";
     }
+
+    @GetMapping("/registerForm")
+    public String registerForm() {
+        return "registerForm";
+    }
+
 }
