@@ -3,7 +3,6 @@ package kr.co.cofile.hdcdmybatis;
 import kr.co.cofile.hdcdmybatis.domain.Board2;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 

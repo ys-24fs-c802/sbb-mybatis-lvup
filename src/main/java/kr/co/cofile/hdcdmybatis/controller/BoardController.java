@@ -1,13 +1,15 @@
 package kr.co.cofile.hdcdmybatis.controller;
 
 import kr.co.cofile.hdcdmybatis.domain.Board;
+import kr.co.cofile.hdcdmybatis.exception.BoardRegistrationException;
+import kr.co.cofile.hdcdmybatis.service.BoardService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,60 +19,40 @@ import java.util.Map;
 @RequestMapping("/boards")
 public class BoardController {
 
+    private final BoardService boardService;
+    @Autowired
+    public BoardController(BoardService boardService) {
+        this.boardService = boardService;
+    }
+
     @GetMapping
     public ResponseEntity<List<Board>> getBoards() {
         log.info("getBoards");
 
-        List<Board> boardList = new ArrayList<>();
-        Board board = new Board();
-
-        board.setId(1);
-        board.setTitle("제목1");
-        board.setContent("내용1");
-        board.setWriter("hongkd");
-        board.setCreateTime(LocalDateTime.now());
-
-        boardList.add(board);
-
-        board = new Board();
-
-        board.setId(2);
-        board.setTitle("제목2");
-        board.setContent("내용2");
-        board.setWriter("hongkd");
-        board.setCreateTime(LocalDateTime.now());
-
-        boardList.add(board);
+        List<Board> boardList = boardService.readAll();
 
         return ResponseEntity.ok(boardList);
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> addBoard(@RequestBody Board board) {
+    public ResponseEntity<Map<String, Object>> addBoard(@Validated @RequestBody Board board) throws BoardRegistrationException {
         log.info("addBoard");
         log.info(board.toString());
 
-        // id=3 추가
-        board.setId(3);
+        Board savedBoard = boardService.register(board);
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("message", "게시글 정보가 성공적으로 저장되었습니다.");
-        result.put("board", board);
+        Map<String, Object> map = new HashMap<>();
+        map.put("message", "success");
+        map.put("board", savedBoard);
 
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.CREATED).body(map);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Board> getBoard(@PathVariable int id) {
         log.info("getBoard({})", id);
 
-        Board board = new Board();
-
-        board.setId(1);
-        board.setTitle("제목1");
-        board.setContent("내용1");
-        board.setWriter("hongkd");
-        board.setCreateTime(LocalDateTime.now());
+        Board board = boardService.read(id);
 
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
@@ -79,7 +61,9 @@ public class BoardController {
     public ResponseEntity<String> deleteBoard(@PathVariable int id) {
         log.info("deleteBoard({})", id);
 
-        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+        boardService.delete(id);
+
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
@@ -87,10 +71,13 @@ public class BoardController {
         log.info("updateBoard({})", id);
         log.info(board.toString());
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("message", "게시글 정보가 성공적으로 수정되었습니다.");
-        result.put("board", board);
+        board.setId(id);  // 경로 변수의 ID를 보드 객체에 설정
+        Board updatedBoard = boardService.update(board);
 
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        Map<String, Object> map = new HashMap<>();
+        map.put("message", "success");
+        map.put("board", updatedBoard);
+
+        return ResponseEntity.ok(map);
     }
 }

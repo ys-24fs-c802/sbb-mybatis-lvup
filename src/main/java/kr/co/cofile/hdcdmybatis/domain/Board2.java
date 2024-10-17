@@ -1,6 +1,7 @@
 package kr.co.cofile.hdcdmybatis.domain;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NonNull;
 
 import java.io.Serial;
 import java.io.Serializable;

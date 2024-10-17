@@ -1,11 +1,11 @@
 package kr.co.cofile.hdcdmybatis.controller;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import kr.co.cofile.hdcdmybatis.domain.Address;
 import kr.co.cofile.hdcdmybatis.domain.Card;
 import kr.co.cofile.hdcdmybatis.domain.Member;
+import kr.co.cofile.hdcdmybatis.service.MemberService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -13,14 +13,21 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping("/members")
 public class MemberController {
+
+    MemberService memberService;
+    @Autowired
+    public MemberController(MemberService memberService) {
+        this.memberService = memberService;
+    }
 
     @PostMapping("/register01")
     public ResponseEntity<String> register01(@RequestBody Member member) {
@@ -29,9 +36,7 @@ public class MemberController {
         log.info("userId = " + member.getUserId());
         log.info("password = " + member.getPassword());
 
-        ResponseEntity<String> entity = new ResponseEntity<>("SUCCESS", HttpStatus.OK);
-
-        return entity;
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
     @PostMapping("/register01/{userId}")
@@ -43,9 +48,7 @@ public class MemberController {
         log.info("member.getUserId() = " + member.getUserId());
         log.info("member.getPassword() = " + member.getPassword());
 
-        ResponseEntity<String> entity = new ResponseEntity<>("SUCCESS", HttpStatus.OK);
-
-        return entity;
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
     @PostMapping("/register02")
@@ -57,9 +60,7 @@ public class MemberController {
             log.info("password = " + member.getPassword());
         }
 
-        ResponseEntity<String> entity = new ResponseEntity<>("SUCCESS", HttpStatus.OK);
-
-        return entity;
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
     @PostMapping("/register03")
@@ -78,9 +79,7 @@ public class MemberController {
             log.info("address == null");
         }
 
-        ResponseEntity<String> entity = new ResponseEntity<>("SUCCESS", HttpStatus.OK);
-
-        return entity;
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
     @PostMapping("/register04")
@@ -103,9 +102,7 @@ public class MemberController {
             log.info("cardList == null");
         }
 
-        ResponseEntity<String> entity = new ResponseEntity<>("SUCCESS", HttpStatus.OK);
-
-        return entity;
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
     @GetMapping("/registerForm")
@@ -146,9 +143,7 @@ public class MemberController {
 
         log.info("originalName: " + originalFilename);
 
-        ResponseEntity<String> entity = new ResponseEntity<>("UPLOAD SUCCESS " + originalFilename, HttpStatus.OK);
-
-        return entity;
+        return new ResponseEntity<>("UPLOAD SUCCESS " + originalFilename, HttpStatus.OK);
     }
 
     @PostMapping(path = "", produces="text/plain;charset=utf-8")
@@ -177,9 +172,7 @@ public class MemberController {
                 log.info("fieldError.getDefaultMessage() = " + fieldError.getDefaultMessage());
             }
 
-            ResponseEntity<String> entity = new ResponseEntity<>(result.toString(), HttpStatus.BAD_REQUEST);
-
-            return entity;
+            return new ResponseEntity<>(result.toString(), HttpStatus.BAD_REQUEST);
         }
 
         log.info("member.getUserId() = " + member.getUserId());
@@ -189,5 +182,14 @@ public class MemberController {
         log.info("member.getGender() = " + member.getGender());
 
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@RequestBody Member member) {
+        log.info("delete");
+
+        memberService.delete(member.getUserId());
+
+        return ResponseEntity.ok().build();
     }
 }
