@@ -150,22 +150,75 @@ $(function() {
 			}
 		});
 	});
+	$("#registerBtn").on("click", function () {
+        const userId01 = $("#userId");
+        const password01 = $("#password");
+        const userName = $("#userName");
+        const email = $("#email");
+        const userId01Val = userId01.val();
+        const password01Val = password01.val();
+        const userNameVal = userName.val();
+        const emailVal = email.val();
+        const genderVal = $('input[name="gender"]:checked').val();
+        console.log(genderVal);
+        console.log(userId01);
+        const userObject = {
+            userId: userId01Val,
+            password: password01Val,
+            userName: userNameVal,
+            email: emailVal,
+            gender: genderVal
+        };
+        $.ajax({
+            type: "POST",
+            url: baseUrl,
+            data: JSON.stringify(userObject),
+            contentType: "application/json; charset=UTF-8",
+            success: function (result) {
+                console.log("result: " + result);
+                alert(result);
+            },
+            error: function (xhr, status, error) {
+                alert("code:" + xhr.status + "\n"
+                    + "message:" + xhr.responseText + "\n"
+                    + "error:" + error);
+            }
+        });
+    });
 });
 </script>
 
 <body>
 	<h1>Register Form </h1>
-	<form>
-		<label for="userId">userId: </label>
-		<input type="text" name="userId" value="hongkd" id="userId"><br>
-		<label for="password">password: </label>
-		<input type="text" name="password" value="1234" id="password"><br>
-		<input type="file" id="inputFile">
-	</form>
+	<div>
+    <label for="userId">userId: </label>
+    <input type="text" name="userId" value="hongkd" id="userId"><br>
+    <br>
+    <label for="password">password: </label>
+    <input type="text" name="password" value="1234" id="password"><br>
+    <br>
+    <input type="file" id="inputFile">
+    <br>
+    <label for="userName">userName: </label>
+    <input type="text" name="userName" value="홍길동" id="userName"><br>
+    <br>
+    <label for="email">userName: </label>
+    <input type="text" name="email" value="hong@a.com" id="email"><br>
+    <div>
+        <div>성별</div>
+        <input id="gender1" name="gender" type="radio" value="male"/>
+        <label for="gender1">Male</label> <br>
+        <input id="gender2" name="gender" type="radio" value="female"/>
+        <label for="gender2">Female</label> <br>
+        <input id="gender3" name="gender" type="radio" value="other"/>
+        <label for="gender3">Other</label>
+    </div>
+</div>
 	
 	<button id="registerBtn01">register(yyyy/MM/dd)</button>
 	<button id="registerBtn02">register(yyyyMMdd)</button>
 	<button id="registerBtn03">register(yyyy-MM-dd)</button>
 	<button id="readBtn">read</button>
+	<button id="registerBtn">register</button>
 </body>
 </html>
