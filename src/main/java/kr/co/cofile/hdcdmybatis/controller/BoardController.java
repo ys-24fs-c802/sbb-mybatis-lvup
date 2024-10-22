@@ -1,21 +1,36 @@
 package kr.co.cofile.hdcdmybatis.controller;
 
-import kr.co.cofile.hdcdmybatis.domain.Board;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import kr.co.cofile.hdcdmybatis.domain.Board;
+import kr.co.cofile.hdcdmybatis.exception.BoardNotFoundException;
+import kr.co.cofile.hdcdmybatis.service.BoardService;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @RestController
 @RequestMapping("/boards")
 public class BoardController {
+	
+	@Autowired
+	BoardService boardService;
 
     @GetMapping
     public ResponseEntity<List<Board>> getBoards() {
@@ -61,16 +76,10 @@ public class BoardController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Board> getBoard(@PathVariable int id) {
+    public ResponseEntity<Board> getBoard(@PathVariable("id") int id) {
         log.info("getBoard({})", id);
 
-        Board board = new Board();
-
-        board.setId(1);
-        board.setTitle("제목1");
-        board.setContent("내용1");
-        board.setWriter("hongkd");
-        board.setCreateTime(LocalDateTime.now());
+        Board board = boardService.read(id);
 
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
@@ -92,5 +101,10 @@ public class BoardController {
         result.put("board", board);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+    
+    @ExceptionHandler(BoardNotFoundException.class)
+    public ResponseEntity<String> handleMyException(BoardNotFoundException e) {
+        return ResponseEntity.badRequest().body("An error occurred: " + e.getMessage());
     }
 }
